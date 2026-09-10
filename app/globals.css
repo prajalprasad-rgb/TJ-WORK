@@ -333,6 +333,8 @@ img{display:block}
 }
 
 @media(max-width:640px){
+  .profileCard,.coupleFeature,.countdownCard,.storyCard,.ringsArtwork,.eventCard,.galleryTile,.filmFrame,.thankYouCopy{will-change:transform,opacity;transform:translateZ(0)}
+  .glassPanel,.musicNudge,.cameraModal{backdrop-filter:none}
   .sectionSpace{padding-block:4.5rem}.sectionHeading{margin-bottom:2.4rem}.sectionHeading h2{font-size:clamp(2.6rem,13vw,3.65rem)}
   .introCopy{padding:1.2rem}.introCopy h1,.introCopy h2{font-size:clamp(3.4rem,17vw,5rem)}
   .invitationShell{padding:.5rem}.invitationCard{padding:1rem;border-radius:1.5rem}.scratchReveal{border-radius:1.1rem}.formalNames{font-size:.52rem}
@@ -354,6 +356,4 @@ img{display:block}
 
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
-  .petalField{display:none}
 }
