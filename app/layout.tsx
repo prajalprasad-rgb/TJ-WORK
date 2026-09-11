@@ -7,7 +7,10 @@ const serif = Cormorant_Garamond({ subsets: ["latin"], variable: "--font-serif",
 const sans = Manrope({ subsets: ["latin"], variable: "--font-sans", weight: ["300", "400", "500", "600"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ??
+      "https://jeremy-anuja-weeding.prajal.online",
+  ),
   title: `${d.bride.firstName} & ${d.groom.firstName} | Wedding Invitation`,
   description: `Together with our family, ${d.bride.firstName} & ${d.groom.firstName} invite you to celebrate our wedding.`,
   openGraph: {
