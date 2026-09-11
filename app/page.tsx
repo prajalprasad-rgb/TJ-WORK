@@ -1434,11 +1434,14 @@ function WeddingCamera() {
 }
 
 function RSVPSection() {
+  const rsvpStorageKey = "wedify-rsvp-submitted-v2";
+  const rsvpWebhook =
+    "https://script.google.com/macros/s/AKfycbx_f89ZH0MVUu_e4aCNSHruCpKrxmofFN1BZNFGSn-EjeMicSvsQZ3ykqEmVPNxfXTS8A/exec";
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-    setDone(localStorage.getItem("wedify-rsvp-submitted") === "yes");
+    setDone(localStorage.getItem(rsvpStorageKey) === "yes");
   }, []);
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -1446,15 +1449,44 @@ function RSVPSection() {
     setError("");
     const form = event.currentTarget;
     const body = Object.fromEntries(new FormData(form).entries());
+    const eventSelection = String(body.eventSelection);
+    const directRow = {
+      name: String(body.name).trim(),
+      normalizedName: String(body.name).trim().toLowerCase(),
+      numberOfGuests: Number(body.guests),
+      attendance: String(body.attendance),
+      eventSelection,
+      engagement:
+        eventSelection === "Engagement" || eventSelection === "Both"
+          ? "Yes"
+          : "No",
+      wedding:
+        eventSelection === "Wedding" || eventSelection === "Both"
+          ? "Yes"
+          : "No",
+      submissionTimestamp: new Date().toISOString(),
+    };
+    const saveDirectly = () =>
+      fetch(rsvpWebhook, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(directRow),
+      });
     try {
       const response = await fetch("/api/rsvp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.error);
-      localStorage.setItem("wedify-rsvp-submitted", "yes");
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        }).catch(() => null);
+      if (!response || response.status === 404 || response.status === 405) {
+        await saveDirectly();
+      } else {
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error);
+        if (result.demo) await saveDirectly();
+      }
+      localStorage.setItem(rsvpStorageKey, "yes");
       setDone(true);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Please try again.");
