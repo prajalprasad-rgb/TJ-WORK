@@ -89,7 +89,7 @@ export const weddingData = {
     logo: "/logos/tj-photography.png",
     instagram: "https://instagram.com/tj_photography_1",
   },
-  music: "/audio/all-of-me-violin-guitar.mp3",
+  music: "/audio/i-think-they-call-this-love-cover.mp3",
   shareText: "Come celebrate our love with us as Anuja & Jeremy say ‘I do.’ View our invitation: {url} #AJToForever",
 };
 
