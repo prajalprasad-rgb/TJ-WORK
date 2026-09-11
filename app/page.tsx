@@ -1621,6 +1621,16 @@ function SaveTheDateFilm({
     if (!picture || !sound || !section) return;
     let active = false;
     let frame = 0;
+    const playPicture = () => {
+      if (!active) return;
+      picture.muted = true;
+      picture.defaultMuted = true;
+      picture.playsInline = true;
+      void picture.play().catch(() => {
+        // Mobile browsers may reject the first attempt while media is buffering.
+        // The loadeddata/canplay listeners below retry as soon as a frame is ready.
+      });
+    };
     const deactivate = () => {
       active = false;
       filmActive.current = false;
@@ -1634,8 +1644,7 @@ function SaveTheDateFilm({
       active = true;
       filmActive.current = true;
       onEnterVideo();
-      picture.muted = true;
-      void picture.play();
+      playPicture();
       if (soundUnlocked.current) {
         setSoundRequired(false);
         void fadeFilmAudioIn();
@@ -1657,6 +1666,8 @@ function SaveTheDateFilm({
     const ended = () => deactivate();
     window.addEventListener("scroll", scheduleCheck, { passive: true });
     window.addEventListener("resize", scheduleCheck);
+    picture.addEventListener("loadeddata", playPicture);
+    picture.addEventListener("canplay", playPicture);
     picture.addEventListener("ended", ended);
     checkPosition();
     return () => {
@@ -1667,6 +1678,8 @@ function SaveTheDateFilm({
       picture.pause();
       window.removeEventListener("scroll", scheduleCheck);
       window.removeEventListener("resize", scheduleCheck);
+      picture.removeEventListener("loadeddata", playPicture);
+      picture.removeEventListener("canplay", playPicture);
       picture.removeEventListener("ended", ended);
     };
   }, [fadeFilmAudioIn, onEnterVideo, onLeaveVideo, stopAudioFade]);
@@ -1706,9 +1719,10 @@ function SaveTheDateFilm({
         >
           <video
             ref={video}
+            autoPlay
             muted
             playsInline
-            preload="metadata"
+            preload="auto"
             poster="/video/save-the-date-poster.jpg"
           >
             <source src="/video/save-the-date.mp4" type="video/mp4" />
