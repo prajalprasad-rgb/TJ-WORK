@@ -4,7 +4,7 @@ export const weddingData = {
     fullName: "Anuja George",
     father: "George Joseph",
     mother: "Sally George",
-    siblings: ["Anumoi George", "Dr. Jeeva George"],
+    siblings: ["Anumol George", "Dr. Jeeva George"],
     bio: "Anuja works as a nurse in Ireland.",
     instagram: "anujakuzhippillil",
   },
